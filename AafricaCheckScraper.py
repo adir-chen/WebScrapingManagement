@@ -2,9 +2,9 @@ from AbstractScraper import AbstractScraper
 from datetime import datetime
 
 
-class TruthOrFictionScraper(AbstractScraper):
+class AafricaCheckScraper(AbstractScraper):
 
-    def __init__(self, scraper_name='TruthOrFiction', scraper_url='https://www.truthorfiction.com/category/fact-checks/page/'):
+    def __init__(self, scraper_name='AafricaCheck', scraper_url='https://africacheck.org/latest-reports/page/'):
         self.scraper_name = scraper_name
         self.scraper_url = scraper_url
         super().__init__()
@@ -14,14 +14,13 @@ class TruthOrFictionScraper(AbstractScraper):
         claims_info_arr = []
         while page_num <= num_of_pages:
             page_soup = super().open_fact_check_page(self.scraper_url + str(page_num))
-            container = page_soup.findAll('div', class_='container')[3]
-            contents = container.findAll('a', class_='tt-post-title')
+            contents = page_soup.find('div', class_='col-sm-8 clearfix').findAll('article')
             for element in contents:
                 # title
-                title = element.text.strip()
+                title = element.find('h2').text.strip()
 
                 # url
-                url = element['href']
+                url = element.find('h2').find('a')['href']
 
                 # open article page
                 article_page = super().open_fact_check_page(url)
@@ -30,32 +29,31 @@ class TruthOrFictionScraper(AbstractScraper):
                 description = article_page.find('meta', attrs={'name': 'description'})['content']
 
                 # verdict date
-                verdict_datetime = datetime.strptime(article_page.find('span', class_='tt-post-date-single').text.strip(), '%B %d, %Y')
+                verdict_date_full = element.find('p', class_='date-published').text.strip().split('| ')[1].split(' ')
+                verdict_date = verdict_date_full[1].strip() + ' ' + super().replace_suffix(
+                    verdict_date_full[0].strip()) + ', ' + verdict_date_full[2].strip()
+                verdict_datetime = datetime.strptime(verdict_date, '%B %d, %Y')
                 verdict_date = datetime.strftime(verdict_datetime, '%d/%m/%Y')
 
                 # category
-                category = 'Fact Checks'
-                all_categories = article_page.find('div', class_='tt-blog-category post-single text-center').find_all('a')
-                for categ in all_categories:
-                    if categ.text.strip() != 'Disinformation' and categ.text.strip() != 'Fact Checks':
-                        category = categ.text
-                        break
-
-                # label
-                label = article_page.find('div', class_='rating-description').text.strip()
+                category = element.find('ul', class_='tag-list').find('li').text.strip()
 
                 # claim
-                claim = article_page.find('div', class_='claim-description').text.strip()
+                claim = element.find('div', class_='report-claim').find('p').text.strip()
+
+                # label
+                label = element.find('div', class_='verdict-stamp').text.strip()
 
                 # tags
-                tags = []
-                tags_content = article_page.find('ul', class_='tt-tags').find_all('li')
-                for tag_content in tags_content:
-                    tags.append(tag_content.text.strip())
+                tags_list = []
+                for tag in element.find('ul', class_='tag-list').findAll('li')[1:]:
+                    tags_list.append(tag.find('a').text.strip())
+                tags_claim = super().extract_tags(claim)
+                tags = list(set(tags_list + tags_claim))
                 tags = ' '.join(tags)
 
                 # img_src
-                img_src = article_page.find('a', class_='tt-thumb')['href']
+                img_src = element.find('img')['src']
 
                 claim_info_dict = {'username': self.scraper_name,
                                    'title': title,
@@ -68,7 +66,5 @@ class TruthOrFictionScraper(AbstractScraper):
                                    'label': label,
                                    'img_src': img_src}
                 claims_info_arr.append(claim_info_dict)
-                break
             page_num += 1
-            break
         return claims_info_arr

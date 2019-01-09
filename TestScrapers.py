@@ -26,7 +26,7 @@ class TestScrapers(unittest.TestCase):
         self.polygraph_scraper = PolygraphScraper()
         try:
             claims_info_arr = self.polygraph_scraper.extract_claims_info(1)
-            self.assertTrue(len(claims_info_arr) == 8)
+            self.assertTrue(len(claims_info_arr) == 12)
         except:
             self.assertTrue(False)
 

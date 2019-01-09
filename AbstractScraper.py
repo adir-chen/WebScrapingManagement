@@ -6,7 +6,6 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import string
-import datetime
 
 
 class AbstractScraper(ABC):
@@ -19,7 +18,7 @@ class AbstractScraper(ABC):
         return BeautifulSoup(urlopen(request), "html.parser")
 
     @abstractmethod
-    def extract_claims_info(self):
+    def extract_claims_info(self, num_of_pages):
         pass
 
     def extract_tags(self, claim):
@@ -37,19 +36,25 @@ class AbstractScraper(ABC):
                 tags.append(lemmatizer.lemmatize(word_and_pos_tag[0]))
         return tags
 
-    def check_if_claim_exists(self, url):
-        for claim_info in self.claims_history:
-            if claim_info['url'] == url:
-                return True
-        return False
+    def replace_suffix_in_date(date):
+        all_suffix = ["th", "rd", "nd", "st"]
+        for suffix in all_suffix:
+            date = date.replace(suffix, '')
+        return date
 
-    def update_claims_info_arr(self, claims_info):
-        self.claims_history.append(claims_info)
+    # def check_if_claim_exists(self, url):
+    #     for claim_info in self.claims_history:
+    #         if claim_info['url'] == url:
+    #             return True
+    #     return False
 
-    def clean_history(self):
-        date_week_ago = datetime.datetime.now() - datetime.timedelta(days=7)
-        delete_history = []
-        for claim_info in self.claims_history:
-            if datetime.datetime.strptime(claim_info['verdict_date'],'%d/%m/%Y') < date_week_ago:
-                delete_history.append(claim_info)
-        self.claims_history = [claim for claim in self.claims_history if claim not in delete_history]
+    # def update_claims_info_arr(self, claims_info):
+    #     self.claims_history.append(claims_info)
+
+    # def clean_history(self):
+    #     date_week_ago = datetime.datetime.now() - datetime.timedelta(days=7)
+    #     delete_history = []
+    #     for claim_info in self.claims_history:
+    #         if datetime.datetime.strptime(claim_info['verdict_date'],'%d/%m/%Y') < date_week_ago:
+    #             delete_history.append(claim_info)
+    #     self.claims_history = [claim for claim in self.claims_history if claim not in delete_history]
