@@ -2,9 +2,9 @@ from AbstractScraper import AbstractScraper
 from datetime import datetime
 
 
-class AafricaCheckScraper(AbstractScraper):
+class AfricaCheckScraper(AbstractScraper):
 
-    def __init__(self, scraper_name='AafricaCheck', scraper_url='https://africacheck.org/latest-reports/page/'):
+    def __init__(self, scraper_name='AfricaCheck', scraper_url='https://africacheck.org/latest-reports/page/'):
         self.scraper_name = scraper_name
         self.scraper_url = scraper_url
         super().__init__()
@@ -30,8 +30,7 @@ class AafricaCheckScraper(AbstractScraper):
 
                 # verdict date
                 verdict_date_full = element.find('p', class_='date-published').text.strip().split('| ')[1].split(' ')
-                verdict_date = verdict_date_full[1].strip() + ' ' + super().replace_suffix(
-                    verdict_date_full[0].strip()) + ', ' + verdict_date_full[2].strip()
+                verdict_date = verdict_date_full[1].strip() + ' ' + super().replace_suffix_in_date(verdict_date_full[0].strip()) + ', ' + verdict_date_full[2].strip()
                 verdict_datetime = datetime.strptime(verdict_date, '%B %d, %Y')
                 verdict_date = datetime.strftime(verdict_datetime, '%d/%m/%Y')
 
@@ -66,5 +65,6 @@ class AafricaCheckScraper(AbstractScraper):
                                    'label': label,
                                    'img_src': img_src}
                 claims_info_arr.append(claim_info_dict)
+                break
             page_num += 1
         return claims_info_arr

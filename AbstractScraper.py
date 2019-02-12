@@ -36,7 +36,7 @@ class AbstractScraper(ABC):
                 tags.append(lemmatizer.lemmatize(word_and_pos_tag[0]))
         return tags
 
-    def replace_suffix_in_date(date):
+    def replace_suffix_in_date(self, date):
         all_suffix = ["th", "rd", "nd", "st"]
         for suffix in all_suffix:
             date = date.replace(suffix, '')

@@ -30,8 +30,7 @@ class PolitifactScraper(AbstractScraper):
 
                 # verdict_date
                 verdict_date_full = element.find('span', class_='article__meta').text.strip().split(',')
-                verdict_date = verdict_date_full[1].strip().split(' ')[0] + ' ' + super().replace_suffix_in_date(
-                                verdict_date_full[1].strip().split(' ')[1]) + ', ' + verdict_date_full[2].strip()
+                verdict_date = verdict_date_full[1].strip().split(' ')[0] + ' ' + super().replace_suffix_in_date(verdict_date_full[1].strip().split(' ')[1]) + ', ' + verdict_date_full[2].strip()
                 verdict_datetime = datetime.strptime(verdict_date, '%B %d, %Y')
                 verdict_date = datetime.strftime(verdict_datetime, '%d/%m/%Y')
 
@@ -61,5 +60,6 @@ class PolitifactScraper(AbstractScraper):
                                    'label': label,
                                    'img_src': img_src}
                 claims_info_arr.append(claim_info_dict)
+                break
             page_num += 1
         return claims_info_arr
