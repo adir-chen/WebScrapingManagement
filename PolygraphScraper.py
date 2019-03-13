@@ -47,7 +47,7 @@ class PolygraphScraper(AbstractScraper):
                 tags_content = article_page.find('meta', attrs={'name': 'news_keywords'})['content'].split(',')
                 for tag_content in tags_content:
                     tags.append(tag_content.strip())
-                tags = ' '.join(tags)
+                tags = ','.join(tags)
 
                 # img_src
                 img_src = article_page.find('div', class_='img-wrap').find('img')['src']

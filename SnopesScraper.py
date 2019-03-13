@@ -43,7 +43,7 @@ class SnopesScraper(AbstractScraper):
                 label = article_page.find('div', class_='rating-text').text.strip().split('\n')[0]
 
                 # tags
-                tags = ' '.join(super().extract_tags(claim))
+                tags = ','.join(super().extract_tags(claim))
 
                 # img_src
                 img_src = article_page.find('div', class_='featured-asset').find('img', class_='bg-image')['data-lazy-src'].split('.jpg')[0] + '.jpg'

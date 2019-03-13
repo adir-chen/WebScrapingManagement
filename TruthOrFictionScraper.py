@@ -52,7 +52,7 @@ class TruthOrFictionScraper(AbstractScraper):
                 tags_content = article_page.find('ul', class_='tt-tags').find_all('li')
                 for tag_content in tags_content:
                     tags.append(tag_content.text.strip())
-                tags = ' '.join(tags)
+                tags = ','.join(tags)
 
                 # img_src
                 img_src = article_page.find('a', class_='tt-thumb')['href']

@@ -44,7 +44,7 @@ class ClimateFeedbackScraper(AbstractScraper):
                 label = element.find('img', class_='fact-check-card__row__verdict__img')['src'].split('HTag_')[1].split('.png')[0]
 
                 # tags
-                tags = ' '.join(super().extract_tags(claim))
+                tags = ','.join(super().extract_tags(claim))
 
                 # img_src
                 img_src = element.find('img', class_='feedpages__claim__container__illustration__screenshot__img')['src'].split('.png')[0]

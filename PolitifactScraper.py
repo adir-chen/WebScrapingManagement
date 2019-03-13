@@ -44,7 +44,7 @@ class PolitifactScraper(AbstractScraper):
                 label = element.find('div', class_='meter').find('img')['alt'].strip()
 
                 # tags
-                tags = ' '.join(super().extract_tags(claim))
+                tags = ','.join(super().extract_tags(claim))
 
                 # img_src
                 img_src = element.find('div', class_='statement__body').find('img')['src']

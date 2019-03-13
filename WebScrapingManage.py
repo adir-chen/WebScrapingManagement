@@ -8,18 +8,21 @@ from GossipCopScraper import GossipCopScraper
 from FactScanScraper import FactScanScraper
 from ClimateFeedbackScraper import ClimateFeedbackScraper
 from AfricaCheckScraper import AfricaCheckScraper
-
+from CnnAPI import CnnAPI
 
 class WebScrapingManage:
     def __init__(self):
         self.client = requests.session()
-        self.API_BASE_ENDPOINT = 'http://127.0.0.1:8000/' # defining the api-endpoint 'http://132.72.23.63:3004/'
+        self.API_BASE_ENDPOINT = 'http://127.0.0.1:8000/'  # defining the api-endpoint 'http://132.72.23.63:3004/'
         self.API_ADD_CLAIM_ENDPOINT = self.API_BASE_ENDPOINT + 'add_claim'
         self.API_SCRAPERS_IDS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_scrapers'
         self.API_RANDOM_CLAIMS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_random_claims_from_scrapers'
-        self.scrapers_dict = {'AfricaCheck': AfricaCheckScraper(), 'FactScan': FactScanScraper(), 'ClimateFeedback': ClimateFeedbackScraper(),
-                              'Politifact': PolitifactScraper(), 'GossipCop': GossipCopScraper(),
-                              'Snopes': SnopesScraper(), 'Polygraph': PolygraphScraper(), 'TruthOrFiction': TruthOrFictionScraper()}
+        self.scrapers_dict = {'CnnAPI': CnnAPI(),'AfricaCheck': AfricaCheckScraper(), 'FactScan': FactScanScraper(), 'ClimateFeedback': ClimateFeedbackScraper(),
+                              'GossipCop': GossipCopScraper(), 'Politifact': PolitifactScraper(),
+                              'TruthOrFiction': TruthOrFictionScraper(), 'Polygraph': PolygraphScraper(), 'Snopes': SnopesScraper()}
+        self.scrapers_passwords = {'CnnAPI': '5Camtv7xpU', 'AfricaCheck': '5Camtv7xpU', 'FactScan': '5Camtv7xpU',
+                                   'ClimateFeedback': '5Camtv7xpU', 'GossipCop': '5Camtv7xpU', 'Politifact': '5Camtv7xpU',
+                                   'TruthOrFiction': '5Camtv7xpU', 'Polygraph': '5Camtv7xpU', 'Snopes': '5Camtv7xpU'}
 
     def extract_claims_from_scrapers(self, num_of_pages):
         print('start')
@@ -28,20 +31,34 @@ class WebScrapingManage:
         csrf_token = self.client.cookies['csrftoken']
         headers = {'url': self.API_ADD_CLAIM_ENDPOINT, "X-CSRFToken": csrf_token}
         scrapers_ids = json.loads(self.client.get(self.API_SCRAPERS_IDS_ENDPOINT).content.decode('utf-8'))
+        # for the first time to send scrapers' claims
+        # all_scrapers_claims = []
         for scraper_name, scraper_class in self.scrapers_dict.items():
             try:
                 claims_info_arr = scraper_class.extract_claims_info(num_of_pages)
                 for claim_info in claims_info_arr:
                     claim_info['user_id'] = scrapers_ids[scraper_name]
+                    claim_info['password'] = self.scrapers_passwords[scraper_name]
+                    claim_info['add_comment'] = 'true'
                     # sending post request and saving response as response object
                     print('Sending a claim from %s' % scraper_name)
+                    # for the first time to send scrapers' claims
+                    # all_scrapers_claims.append(claim_info)
                     post_request = requests.post(url=self.API_ADD_CLAIM_ENDPOINT, data=claim_info, headers=headers,
                                                  cookies=cookies)
                     # scraper_class.update_claims_info_arr(claim_info)
             except Exception as e:
                 print('Error in scraper ' + scraper_name + ': can\'t import new claims')
+                continue
             # scraper_class.clean_history()
-                break
+        # for the first time to send scrapers' claims
+        # from datetime import datetime
+        # all_scrapers_claim_sorted_by_verdict_date = sorted(all_scrapers_claims,
+        #                                                    key=lambda k:
+        #                                                    datetime.strptime(k['verdict_date'], '%d/%m/%Y'))
+        # for claim_info in all_scrapers_claims_sorted_by_verdict_date:
+        #     requests.post(url=self.API_ADD_CLAIM_ENDPOINT, data=claim_info, headers=headers,
+        #                   cookies=cookies)
 
     def validate_scrapers(self, num_of_pages):
         no_errors = True
@@ -58,8 +75,10 @@ class WebScrapingManage:
                     if not found and claim['url'] == random_claim['url']:
                         found = True
                         found_claim = claim
+                        break
                 if not found:
                     print('Error in scraper ' + scraper_name + ': wrong url')
+                    continue
 
                 if not found_claim['title'] == random_claim['title']:
                     print('Error in scraper ' + scraper_name + ': wrong title')
@@ -86,5 +105,3 @@ class WebScrapingManage:
                     print('Expected: ' + found_claim['label'] + '. Actual: ' + random_claim['label'])
                     no_errors = False
         return no_errors
-    def extract_claims_from_scrapers_and_validate(self):
-        NotImplemented()

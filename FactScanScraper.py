@@ -47,7 +47,7 @@ class FactScanScraper(AbstractScraper):
                     tags_list.append(tag.text.strip())
                 tags_claim = super().extract_tags(claim)
                 tags = list(set(tags_list + tags_claim))
-                tags = ' '.join(tags)
+                tags = ','.join(tags)
 
                 # img_src
                 img_src = article_page.find('div', class_='post-content').findAll('img')[1]['src']
