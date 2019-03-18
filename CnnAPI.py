@@ -28,7 +28,7 @@ class CnnAPI(AbstractScraper):
             description = article['description']
 
             # verdict date
-            verdict_datetime = datetime.strptime(article['publishedAt'], "%Y-%m-%dT%H:%M:%SZ").date()
+            verdict_datetime = datetime.strptime(article['publishedAt'][:10], "%Y-%m-%d").date()
             verdict_date = datetime.strftime(verdict_datetime, '%d/%m/%Y')
 
             # category
@@ -49,7 +49,7 @@ class CnnAPI(AbstractScraper):
                                'tags': tags,
                                'category': category,
                                'label': 'Unknown',
-                               'img_src': img_src}
+                               'image_src': img_src}
             news_info_arr.append(claim_info_dict)
-
+            break
         return news_info_arr

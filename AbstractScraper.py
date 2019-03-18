@@ -26,15 +26,28 @@ class AbstractScraper(ABC):
         tags = []
         # claim = claim.lower()
         stop_words = set(stopwords.words('english'))
+        not_allowed_input = set(string.punctuation)
         for w in word_tokenize(claim):
-            if w not in stop_words and w not in string.punctuation and '\'' not in w:
+            if w not in stop_words and all(c not in w for c in not_allowed_input) and len(w) != 1:
                 filtered_sentence.append(w)
         lemmatizer = WordNetLemmatizer()
         filtered_sentence = nltk.pos_tag(filtered_sentence)
         for word_and_pos_tag in filtered_sentence:
             if word_and_pos_tag[1].startswith('NN'):
-                tags.append(lemmatizer.lemmatize(word_and_pos_tag[0]))
+                word_lemmatize = lemmatizer.lemmatize(word_and_pos_tag[0])
+                if not any(word_lemmatize.lower() in tag.lower() for tag in tags):
+                    tags.append(word_lemmatize)
         return tags
+
+    # def clean_tags(self, tags):
+    #     new_tags = []
+    #     tags_arr = tags.split(',')
+    #     for tag in tags_arr:
+    #         for punctuation in string.punctuation:
+    #             for word in tag.split(punctuation):
+    #                 len_word = 0
+    #                 for char in word
+
 
     def replace_suffix_in_date(self, date):
         all_suffix = ["th", "rd", "nd", "st"]

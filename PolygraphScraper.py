@@ -47,7 +47,8 @@ class PolygraphScraper(AbstractScraper):
                 tags_content = article_page.find('meta', attrs={'name': 'news_keywords'})['content'].split(',')
                 for tag_content in tags_content:
                     tags.append(tag_content.strip())
-                tags = ','.join(tags)
+                # tags = ','.join(tags)
+                tags = ','.join(super().extract_tags(' '.join(tags)))
 
                 # img_src
                 img_src = article_page.find('div', class_='img-wrap').find('img')['src']
@@ -61,7 +62,7 @@ class PolygraphScraper(AbstractScraper):
                                    'tags': tags,
                                    'category': category,
                                    'label': label,
-                                   'img_src': img_src}
+                                   'image_src': img_src}
                 claims_info_arr.append(claim_info_dict)
                 break
             page_num += 1

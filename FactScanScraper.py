@@ -45,9 +45,10 @@ class FactScanScraper(AbstractScraper):
                 tags_list = []
                 for tag in article_page.find('span', class_='post-category').findAll('a'):
                     tags_list.append(tag.text.strip())
-                tags_claim = super().extract_tags(claim)
-                tags = list(set(tags_list + tags_claim))
-                tags = ','.join(tags)
+                # tags_claim = super().extract_tags(claim)
+                # tags = list(set(tags_list + tags_claim))
+                # tags = ','.join(tags)
+                tags = ','.join(super().extract_tags(' '.join(tags_list)))
 
                 # img_src
                 img_src = article_page.find('div', class_='post-content').findAll('img')[1]['src']
@@ -61,7 +62,7 @@ class FactScanScraper(AbstractScraper):
                                    'tags': tags,
                                    'category': category,
                                    'label': label,
-                                   'img_src': img_src}
+                                   'image_src': img_src}
                 claims_info_arr.append(claim_info_dict)
                 break
             page_num += 1

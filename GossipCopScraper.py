@@ -48,7 +48,8 @@ class GossipCopScraper(AbstractScraper):
                 tags_list = article_page.find('p', class_='tags').findAll('a')
                 for tag in tags_list:
                     tags.append(tag.text.strip())
-                tags = ','.join(tags)
+                # tags = ','.join(tags)
+                tags = ','.join(super().extract_tags(' '.join(tags)))
 
                 # img_src
                 img_src = element.find('img')['src']
@@ -62,7 +63,7 @@ class GossipCopScraper(AbstractScraper):
                                    'tags': tags,
                                    'category': category,
                                    'label': label,
-                                   'img_src': img_src}
+                                   'image_src': img_src}
                 claims_info_arr.append(claim_info_dict)
                 break
             page_num += 1

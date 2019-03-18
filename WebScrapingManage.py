@@ -10,14 +10,15 @@ from ClimateFeedbackScraper import ClimateFeedbackScraper
 from AfricaCheckScraper import AfricaCheckScraper
 from CnnAPI import CnnAPI
 
+
 class WebScrapingManage:
     def __init__(self):
         self.client = requests.session()
         self.API_BASE_ENDPOINT = 'http://127.0.0.1:8000/'  # defining the api-endpoint 'http://132.72.23.63:3004/'
         self.API_ADD_CLAIM_ENDPOINT = self.API_BASE_ENDPOINT + 'add_claim'
-        self.API_SCRAPERS_IDS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_scrapers'
+        self.API_SCRAPERS_IDS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_all_scrapers_ids'
         self.API_RANDOM_CLAIMS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_random_claims_from_scrapers'
-        self.scrapers_dict = {'CnnAPI': CnnAPI(),'AfricaCheck': AfricaCheckScraper(), 'FactScan': FactScanScraper(), 'ClimateFeedback': ClimateFeedbackScraper(),
+        self.scrapers_dict = {'CNN': CnnAPI(), 'AfricaCheck': AfricaCheckScraper(), 'FactScan': FactScanScraper(), 'ClimateFeedback': ClimateFeedbackScraper(),
                               'GossipCop': GossipCopScraper(), 'Politifact': PolitifactScraper(),
                               'TruthOrFiction': TruthOrFictionScraper(), 'Polygraph': PolygraphScraper(), 'Snopes': SnopesScraper()}
         self.scrapers_passwords = {'CnnAPI': '5Camtv7xpU', 'AfricaCheck': '5Camtv7xpU', 'FactScan': '5Camtv7xpU',
@@ -38,7 +39,7 @@ class WebScrapingManage:
                 claims_info_arr = scraper_class.extract_claims_info(num_of_pages)
                 for claim_info in claims_info_arr:
                     claim_info['user_id'] = scrapers_ids[scraper_name]
-                    claim_info['password'] = self.scrapers_passwords[scraper_name]
+                    claim_info['password'] = '9qpmmbb8CR'  # self.scrapers_passwords[scraper_name]
                     claim_info['add_comment'] = 'true'
                     # sending post request and saving response as response object
                     print('Sending a claim from %s' % scraper_name)

@@ -38,18 +38,18 @@ class AfricaCheckScraper(AbstractScraper):
                 category = element.find('ul', class_='tag-list').find('li').text.strip()
 
                 # claim
-                claim = article_page.find('div', class_='the-claim').find('p').text.strip()
+                claim = article_page.find('div', class_='report-claim').find('p').text.strip()
 
                 # label
                 label = element.find('div', class_='verdict-stamp').text.strip()
 
                 # tags
-                tags_list = []
+                tags = []
                 for tag in element.find('ul', class_='tag-list').findAll('li')[1:]:
-                    tags_list.append(tag.find('a').text.strip())
-                tags_claim = super().extract_tags(claim)
-                tags = list(set(tags_list + tags_claim))
-                tags = ','.join(tags)
+                    tags.append(tag.find('a').text.strip())
+                # tags_claim = super().extract_tags(claim)
+                # tags = list(set(tags_list + tags_claim))
+                tags = ','.join(super().extract_tags(' '.join(tags)))
 
                 # img_src
                 img_src = element.find('img')['src']
@@ -63,7 +63,7 @@ class AfricaCheckScraper(AbstractScraper):
                                    'tags': tags,
                                    'category': category,
                                    'label': label,
-                                   'img_src': img_src}
+                                   'image_src': img_src}
                 claims_info_arr.append(claim_info_dict)
                 break
             page_num += 1
