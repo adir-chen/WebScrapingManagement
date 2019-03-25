@@ -1,5 +1,3 @@
-import requests
-import json
 from SnopesScraper import SnopesScraper
 from TruthOrFictionScraper import TruthOrFictionScraper
 from PolygraphScraper import PolygraphScraper
@@ -9,6 +7,9 @@ from FactScanScraper import FactScanScraper
 from ClimateFeedbackScraper import ClimateFeedbackScraper
 from AfricaCheckScraper import AfricaCheckScraper
 from CnnAPI import CnnAPI
+import requests
+import smtplib
+import json
 
 
 class WebScrapingManage:
@@ -21,36 +22,48 @@ class WebScrapingManage:
         self.scrapers_dict = {'CNN': CnnAPI(), 'AfricaCheck': AfricaCheckScraper(), 'FactScan': FactScanScraper(), 'ClimateFeedback': ClimateFeedbackScraper(),
                               'GossipCop': GossipCopScraper(), 'Politifact': PolitifactScraper(),
                               'TruthOrFiction': TruthOrFictionScraper(), 'Polygraph': PolygraphScraper(), 'Snopes': SnopesScraper()}
+        self.scrapers_dict = {'CNN': CnnAPI()}
         self.scrapers_passwords = {'CnnAPI': '5Camtv7xpU', 'AfricaCheck': '5Camtv7xpU', 'FactScan': '5Camtv7xpU',
                                    'ClimateFeedback': '5Camtv7xpU', 'GossipCop': '5Camtv7xpU', 'Politifact': '5Camtv7xpU',
                                    'TruthOrFiction': '5Camtv7xpU', 'Polygraph': '5Camtv7xpU', 'Snopes': '5Camtv7xpU'}
+        self.email = 'wtfactnews@gmail.com'
+        self.email_pass = 'amc8dGig'
 
     def extract_claims_from_scrapers(self, num_of_pages):
         print('start')
-        self.client.get(self.API_BASE_ENDPOINT)
-        cookies = dict(self.client.cookies)
-        csrf_token = self.client.cookies['csrftoken']
-        headers = {'url': self.API_ADD_CLAIM_ENDPOINT, "X-CSRFToken": csrf_token}
-        scrapers_ids = json.loads(self.client.get(self.API_SCRAPERS_IDS_ENDPOINT).content.decode('utf-8'))
-        # for the first time to send scrapers' claims
-        # all_scrapers_claims = []
-        for scraper_name, scraper_class in self.scrapers_dict.items():
-            try:
-                claims_info_arr = scraper_class.extract_claims_info(num_of_pages)
-                for claim_info in claims_info_arr:
-                    claim_info['user_id'] = scrapers_ids[scraper_name]
-                    claim_info['password'] = '9qpmmbb8CR'  # self.scrapers_passwords[scraper_name]
-                    claim_info['add_comment'] = 'true'
-                    # sending post request and saving response as response object
-                    print('Sending a claim from %s' % scraper_name)
-                    # for the first time to send scrapers' claims
-                    # all_scrapers_claims.append(claim_info)
-                    post_request = requests.post(url=self.API_ADD_CLAIM_ENDPOINT, data=claim_info, headers=headers,
-                                                 cookies=cookies)
-                    # scraper_class.update_claims_info_arr(claim_info)
-            except Exception as e:
-                print('Error in scraper ' + scraper_name + ': can\'t import new claims')
-                continue
+        try:
+            self.client.get(self.API_BASE_ENDPOINT)
+            cookies = dict(self.client.cookies)
+            csrf_token = self.client.cookies['csrftoken']
+            headers = {'url': self.API_ADD_CLAIM_ENDPOINT, "X-CSRFToken": csrf_token}
+            scrapers_ids = json.loads(self.client.get(self.API_SCRAPERS_IDS_ENDPOINT).content.decode('utf-8'))
+            # for the first time to send scrapers' claims
+            # all_scrapers_claims = []
+            for scraper_name, scraper_class in self.scrapers_dict.items():
+                try:
+                    claims_info_arr = scraper_class.extract_claims_info(num_of_pages)
+                    for claim_info in claims_info_arr:
+                        claim_info['user_id'] = scrapers_ids[scraper_name]
+                        claim_info['password'] = 'zs9DwHhv3M'  # self.scrapers_passwords[scraper_name]
+                        claim_info['add_comment'] = 'true'
+                        # sending post request and saving response as response object
+                        print('Sending a claim from %s' % scraper_name)
+                        # for the first time to send scrapers' claims
+                        # all_scrapers_claims.append(claim_info)
+                        post_request = requests.post(url=self.API_ADD_CLAIM_ENDPOINT, data=claim_info, headers=headers,
+                                                     cookies=cookies)
+                        # scraper_class.update_claims_info_arr(claim_info)
+                except Exception as e:
+                    print('Error in scraper ' + scraper_name + ': can\'t import new claims')
+                    err_msg = "\nError in scraper " + str(scraper_name) + ": can\'t import new claims"
+                    self.send_mail(err_msg)
+                    continue
+
+        except Exception as e:
+            print('Connection error')
+            err_msg = "\nConnection error : server does not run"
+            self.send_mail(err_msg)
+
             # scraper_class.clean_history()
         # for the first time to send scrapers' claims
         # from datetime import datetime
@@ -60,6 +73,15 @@ class WebScrapingManage:
         # for claim_info in all_scrapers_claims_sorted_by_verdict_date:
         #     requests.post(url=self.API_ADD_CLAIM_ENDPOINT, data=claim_info, headers=headers,
         #                   cookies=cookies)
+
+    def send_mail(self, err_msg):
+        message = 'Subject: {}\n\n{}'.format("Error in WSM", err_msg)
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(self.email, self.email_pass)
+        server.sendmail(self.email,
+                        self.email,
+                        message)
 
     def validate_scrapers(self, num_of_pages):
         no_errors = True
