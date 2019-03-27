@@ -51,5 +51,4 @@ class CnnAPI(AbstractScraper):
                                'label': 'Unknown',
                                'image_src': img_src}
             news_info_arr.append(claim_info_dict)
-            break
         return news_info_arr

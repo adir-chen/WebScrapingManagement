@@ -13,57 +13,65 @@ class FactScanScraper(AbstractScraper):
         page_num = 1
         claims_info_arr = []
         while page_num <= num_of_pages:
-            page_soup = super().open_fact_check_page(self.scraper_url + str(page_num))
-            contents = page_soup.findAll('article')
-            for element in contents:
-                # title
-                title = element.find('h1').find('a')['title']
+            try:
+                page_soup = super().open_fact_check_page(self.scraper_url + str(page_num))
+                contents = page_soup.findAll('article')
+                for element in contents:
+                    try:
+                        # title
+                        title = element.find('h1').find('a')['title']
 
-                # url
-                url = element.find('h1').find('a')['href']
+                        # url
+                        url = element.find('h1').find('a')['href']
 
-                # open article page
-                article_page = super().open_fact_check_page(url)
+                        # open article page
+                        article_page = super().open_fact_check_page(url)
 
-                # description
-                description = article_page.find('meta', attrs={'property': 'og:description'})['content']
+                        # description
+                        description = article_page.find('meta', attrs={'property': 'og:description'})['content']
 
-                # verdict_date
-                verdict_datetime = datetime.strptime(article_page.find('time').text, '%B %d, %Y')
-                verdict_date = datetime.strftime(verdict_datetime, '%d/%m/%Y')
+                        # verdict_date
+                        verdict_datetime = datetime.strptime(article_page.find('time').text, '%B %d, %Y')
+                        verdict_date = datetime.strftime(verdict_datetime, '%d/%m/%Y')
 
-                # category
-                category = 'Politics'
+                        # category
+                        category = 'Politics'
 
-                # claim
-                claim = title
+                        # claim
+                        claim = title
 
-                # label
-                label = article_page.find('div', class_='fact-check-icon').find('img')['alt'].split(':')[1].strip()
+                        # label
+                        label = article_page.find('div', class_='fact-check-icon').find('img')['alt'].split(':')[1].strip()
 
-                # tags
-                tags_list = []
-                for tag in article_page.find('span', class_='post-category').findAll('a'):
-                    tags_list.append(tag.text.strip())
-                # tags_claim = super().extract_tags(claim)
-                # tags = list(set(tags_list + tags_claim))
-                # tags = ','.join(tags)
-                tags = ','.join(super().extract_tags(' '.join(tags_list)))
+                        # tags
+                        tags_list = []
+                        for tag in article_page.find('span', class_='post-category').findAll('a'):
+                            tags_list.append(tag.text.strip())
+                        # tags_claim = super().extract_tags(claim)
+                        # tags = list(set(tags_list + tags_claim))
+                        # tags = ','.join(tags)
+                        tags = ','.join(super().extract_tags(' '.join(tags_list)))
 
-                # img_src
-                img_src = article_page.find('div', class_='post-content').findAll('img')[1]['src']
+                        # img_src
+                        img_src = article_page.find('div', class_='post-content').findAll('img')[1]['src']
 
-                claim_info_dict = {'username': self.scraper_name,
-                                   'title': title,
-                                   'claim': claim,
-                                   'description': description,
-                                   'url': url,
-                                   'verdict_date': verdict_date,
-                                   'tags': tags,
-                                   'category': category,
-                                   'label': label,
-                                   'image_src': img_src}
-                claims_info_arr.append(claim_info_dict)
-                break
-            page_num += 1
+                        claim_info_dict = {'username': self.scraper_name,
+                                           'title': title,
+                                           'claim': claim,
+                                           'description': description,
+                                           'url': url,
+                                           'verdict_date': verdict_date,
+                                           'tags': tags,
+                                           'category': category,
+                                           'label': label,
+                                           'image_src': img_src}
+                        claims_info_arr.append(claim_info_dict)
+                    except Exception as e:
+                        continue
+                print(page_num)
+                page_num += 1
+            except Exception as e:
+                print(page_num)
+                page_num += 1
+                continue
         return claims_info_arr

@@ -22,10 +22,9 @@ class WebScrapingManage:
         self.scrapers_dict = {'CNN': CnnAPI(), 'AfricaCheck': AfricaCheckScraper(), 'FactScan': FactScanScraper(), 'ClimateFeedback': ClimateFeedbackScraper(),
                               'GossipCop': GossipCopScraper(), 'Politifact': PolitifactScraper(),
                               'TruthOrFiction': TruthOrFictionScraper(), 'Polygraph': PolygraphScraper(), 'Snopes': SnopesScraper()}
-        self.scrapers_dict = {'CNN': CnnAPI()}
-        self.scrapers_passwords = {'CnnAPI': '5Camtv7xpU', 'AfricaCheck': '5Camtv7xpU', 'FactScan': '5Camtv7xpU',
-                                   'ClimateFeedback': '5Camtv7xpU', 'GossipCop': '5Camtv7xpU', 'Politifact': '5Camtv7xpU',
-                                   'TruthOrFiction': '5Camtv7xpU', 'Polygraph': '5Camtv7xpU', 'Snopes': '5Camtv7xpU'}
+        self.scrapers_passwords = {'CNN': 'fbYmYExduj', 'AfricaCheck': 'HcrXqG8M6w', 'FactScan': 'GqFhx5bgqt',
+                                   'ClimateFeedback': 'fCLtCtpCub', 'GossipCop': 'a5gq5eR7Kb', 'Politifact': 'Mnwnd3dbfP',
+                                   'TruthOrFiction': '7uDMzAWjJ7', 'Polygraph': 'eaQt93uMrn', 'Snopes': 'd2GTfFfD6D'}
         self.email = 'wtfactnews@gmail.com'
         self.email_pass = 'amc8dGig'
 
@@ -38,41 +37,39 @@ class WebScrapingManage:
             headers = {'url': self.API_ADD_CLAIM_ENDPOINT, "X-CSRFToken": csrf_token}
             scrapers_ids = json.loads(self.client.get(self.API_SCRAPERS_IDS_ENDPOINT).content.decode('utf-8'))
             # for the first time to send scrapers' claims
-            # all_scrapers_claims = []
+            all_scrapers_claims = []
             for scraper_name, scraper_class in self.scrapers_dict.items():
+                print(scraper_name)
                 try:
                     claims_info_arr = scraper_class.extract_claims_info(num_of_pages)
                     for claim_info in claims_info_arr:
                         claim_info['user_id'] = scrapers_ids[scraper_name]
-                        claim_info['password'] = 'zs9DwHhv3M'  # self.scrapers_passwords[scraper_name]
+                        claim_info['password'] = self.scrapers_passwords[scraper_name]
                         claim_info['add_comment'] = 'true'
                         # sending post request and saving response as response object
-                        print('Sending a claim from %s' % scraper_name)
+                        # print('Sending a claim from %s' % scraper_name)
                         # for the first time to send scrapers' claims
-                        # all_scrapers_claims.append(claim_info)
-                        post_request = requests.post(url=self.API_ADD_CLAIM_ENDPOINT, data=claim_info, headers=headers,
-                                                     cookies=cookies)
+                        all_scrapers_claims.append(claim_info)
+                        # post_request = requests.post(url=self.API_ADD_CLAIM_ENDPOINT, data=claim_info, headers=headers,
+                        #                              cookies=cookies)
                         # scraper_class.update_claims_info_arr(claim_info)
                 except Exception as e:
                     print('Error in scraper ' + scraper_name + ': can\'t import new claims')
                     err_msg = "\nError in scraper " + str(scraper_name) + ": can\'t import new claims"
                     self.send_mail(err_msg)
                     continue
-
+            # for the first time to send scrapers' claims
+            from datetime import datetime
+            all_scrapers_claims_sorted_by_verdict_date = sorted(all_scrapers_claims,
+                                                                key=lambda k:
+                                                                datetime.strptime(k['verdict_date'], '%d/%m/%Y'))
+            for claim_info in all_scrapers_claims_sorted_by_verdict_date:
+                requests.post(url=self.API_ADD_CLAIM_ENDPOINT, data=claim_info, headers=headers,
+                              cookies=cookies)
         except Exception as e:
             print('Connection error')
             err_msg = "\nConnection error : server does not run"
             self.send_mail(err_msg)
-
-            # scraper_class.clean_history()
-        # for the first time to send scrapers' claims
-        # from datetime import datetime
-        # all_scrapers_claim_sorted_by_verdict_date = sorted(all_scrapers_claims,
-        #                                                    key=lambda k:
-        #                                                    datetime.strptime(k['verdict_date'], '%d/%m/%Y'))
-        # for claim_info in all_scrapers_claims_sorted_by_verdict_date:
-        #     requests.post(url=self.API_ADD_CLAIM_ENDPOINT, data=claim_info, headers=headers,
-        #                   cookies=cookies)
 
     def send_mail(self, err_msg):
         message = 'Subject: {}\n\n{}'.format("Error in WSM", err_msg)
