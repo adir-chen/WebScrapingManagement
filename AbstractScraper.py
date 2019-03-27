@@ -39,16 +39,6 @@ class AbstractScraper(ABC):
                     tags.append(word_lemmatize)
         return tags
 
-    # def clean_tags(self, tags):
-    #     new_tags = []
-    #     tags_arr = tags.split(',')
-    #     for tag in tags_arr:
-    #         for punctuation in string.punctuation:
-    #             for word in tag.split(punctuation):
-    #                 len_word = 0
-    #                 for char in word
-
-
     def replace_suffix_in_date(self, date):
         all_suffix = ["th", "rd", "nd", "st"]
         for suffix in all_suffix:
