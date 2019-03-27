@@ -15,7 +15,10 @@ import json
 class WebScrapingManage:
     def __init__(self):
         self.client = requests.session()
-        self.API_BASE_ENDPOINT = 'http://127.0.0.1:8000/'  # defining the api-endpoint 'http://132.72.23.63:3004/'
+        # defining the api-endpoint 'http://132.72.23.63:3004/' # cs server ip
+        # 'http://132.72.66.116:8080/' # ise server ip
+        # 'http://127.0.0.1:8000/' # localhost
+        self.API_BASE_ENDPOINT = 'http://132.72.66.116:8080/'   
         self.API_ADD_CLAIM_ENDPOINT = self.API_BASE_ENDPOINT + 'add_claim'
         self.API_SCRAPERS_IDS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_all_scrapers_ids'
         self.API_RANDOM_CLAIMS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_random_claims_from_scrapers'
