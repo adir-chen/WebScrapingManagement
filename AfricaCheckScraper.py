@@ -69,5 +69,4 @@ class AfricaCheckScraper(AbstractScraper):
                                    'image_src': img_src}
                 claims_info_arr.append(claim_info_dict)
             page_num += 1
-            break
         return claims_info_arr
