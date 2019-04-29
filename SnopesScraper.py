@@ -14,19 +14,19 @@ class SnopesScraper(AbstractScraper):
         claims_info_arr = []
         while page_num <= num_of_pages:
             page_soup = super().open_fact_check_page(self.scraper_url + str(page_num))
-            contents = page_soup.find('div', class_='list-group').findAll('article')
+            contents = page_soup.find('div', class_='media-list').findAll('article')
             for element in contents:
                 # title
-                title = element.h2.text
+                title = element.h5.text
 
                 # url
                 url = element.a['href']
 
                 # description
-                description = element.find_next('p').text.strip().split('-', 1)[1].strip()
+                description = element.find_next('p').find('span', class_='date').next_sibling.strip()
 
                 # verdict date
-                verdict_datetime = datetime.strptime(element.find_next('p').text.strip().split('-', 1)[0].strip(), '%d %B %Y')
+                verdict_datetime = datetime.strptime(element.find_next('p').find('span', class_='date').text.strip().split('-', 1)[0].strip(), '%d %B %Y')
                 verdict_date = datetime.strftime(verdict_datetime, '%d/%m/%Y')
 
                 # open article page
@@ -37,16 +37,16 @@ class SnopesScraper(AbstractScraper):
                 category = article_page_all_categories[len(article_page_all_categories) - 1].a.text.strip()
 
                 # claim
-                claim = article_page.find('p', class_='claim').text.strip()
+                claim = article_page.find('div', class_='claim').text.strip()
 
                 # label
-                label = article_page.find('div', class_='rating-text').text.strip().split('\n')[0]
+                label = article_page.find('div', class_='media rating').find('h5').text.strip()
 
                 # tags
                 tags = ','.join(super().extract_tags(claim))
 
                 # img_src
-                img_src = article_page.find('div', class_='featured-asset').find('img', class_='bg-image')['data-lazy-src'].split('.jpg')[0] + '.jpg'
+                img_src = article_page.find('div', class_='image-wrapper').find('img')['data-lazy-src'].split('.jpg')[0] + '.jpg'
 
                 claim_info_dict = {'username': self.scraper_name,
                                    'title': title,

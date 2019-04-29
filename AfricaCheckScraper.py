@@ -38,7 +38,10 @@ class AfricaCheckScraper(AbstractScraper):
                 category = element.find('ul', class_='tag-list').find('li').text.strip()
 
                 # claim
-                claim = article_page.find('div', class_='report-claim').find('p').text.strip()
+                try:
+                    claim = article_page.find('div', class_='report-claim').find('p').text.strip()
+                except:
+                    continue
 
                 # label
                 label = element.find('div', class_='verdict-stamp').text.strip()
@@ -66,4 +69,5 @@ class AfricaCheckScraper(AbstractScraper):
                                    'image_src': img_src}
                 claims_info_arr.append(claim_info_dict)
             page_num += 1
+            break
         return claims_info_arr

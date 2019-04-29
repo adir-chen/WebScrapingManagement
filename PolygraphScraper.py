@@ -30,7 +30,10 @@ class PolygraphScraper(AbstractScraper):
                 description = article_page.find('meta', attrs={'name': 'description'})['content']
 
                 # verdict date
-                verdict_datetime = datetime.strptime(article_page.find('span', class_='date').text.strip(), '%B %d, %Y')
+                verdict_datetime = article_page.find('span', class_='date').text.strip()
+                if 'Last Updated:' in verdict_datetime:
+                    verdict_datetime = verdict_datetime.split('Last Updated:')[1].strip()
+                verdict_datetime = datetime.strptime(verdict_datetime, '%B %d, %Y')
                 verdict_date = datetime.strftime(verdict_datetime, '%d/%m/%Y')
 
                 # category

@@ -48,7 +48,7 @@ class CnnAPI(AbstractScraper):
                                'verdict_date': verdict_date,
                                'tags': tags,
                                'category': category,
-                               'label': 'Unknown',
+                               'label': 'True',
                                'image_src': img_src}
             news_info_arr.append(claim_info_dict)
         return news_info_arr

@@ -49,14 +49,19 @@ class TruthOrFictionScraper(AbstractScraper):
 
                 # tags
                 tags = []
-                tags_content = article_page.find('ul', class_='tt-tags').find_all('li')
-                for tag_content in tags_content:
-                    tags.append(tag_content.text.strip())
+                tags_content = article_page.find('ul', class_='tt-tags')
+                if tags_content:
+                    tags_content = tags_content.find_all('li')
+                    for tag_content in tags_content:
+                        tags.append(tag_content.text.strip())
                 # tags = ','.join(tags)
                 tags = ','.join(super().extract_tags(' '.join(tags)))
 
                 # img_src
-                img_src = article_page.find('a', class_='tt-thumb')['href']
+                try:
+                    img_src = article_page.find('a', class_='tt-thumb')['href']
+                except Exception:
+                    img_src = ''
 
                 claim_info_dict = {'username': self.scraper_name,
                                    'title': title,

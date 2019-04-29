@@ -15,21 +15,34 @@ import json
 class WebScrapingManage:
     def __init__(self):
         self.client = requests.session()
-        # defining the api-endpoint 'http://132.72.23.63:3004/' # cs server ip
-        # 'http://132.72.66.116:8080/' # ise server ip
-        # 'http://127.0.0.1:8000/' # localhost
-        self.API_BASE_ENDPOINT = 'http://132.72.66.116:8080/'   
+        self.API_BASE_ENDPOINT = 'https://wtfact.ise.bgu.ac.il/'
         self.API_ADD_CLAIM_ENDPOINT = self.API_BASE_ENDPOINT + 'add_claim'
         self.API_SCRAPERS_IDS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_all_scrapers_ids'
         self.API_RANDOM_CLAIMS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_random_claims_from_scrapers'
-        self.scrapers_dict = {'CNN': CnnAPI(), 'AfricaCheck': AfricaCheckScraper(), 'FactScan': FactScanScraper(), 'ClimateFeedback': ClimateFeedbackScraper(),
-                              'GossipCop': GossipCopScraper(), 'Politifact': PolitifactScraper(),
-                              'TruthOrFiction': TruthOrFictionScraper(), 'Polygraph': PolygraphScraper(), 'Snopes': SnopesScraper()}
-        self.scrapers_passwords = {'CNN': 'fbYmYExduj', 'AfricaCheck': 'HcrXqG8M6w', 'FactScan': 'GqFhx5bgqt',
-                                   'ClimateFeedback': 'fCLtCtpCub', 'GossipCop': 'a5gq5eR7Kb', 'Politifact': 'Mnwnd3dbfP',
-                                   'TruthOrFiction': '7uDMzAWjJ7', 'Polygraph': 'eaQt93uMrn', 'Snopes': 'd2GTfFfD6D'}
-        self.email = 'wtfactnews@gmail.com'
-        self.email_pass = 'amc8dGig'
+        self.scrapers_dict = {'CNN': CnnAPI(),
+                              'AfricaCheck': AfricaCheckScraper(),
+                              'FactScan': FactScanScraper(),
+                              'ClimateFeedback': ClimateFeedbackScraper(),
+                              'GossipCop': GossipCopScraper(),
+                              'Politifact': PolitifactScraper(),
+                              'TruthOrFiction': TruthOrFictionScraper(),
+                              'Polygraph': PolygraphScraper(),
+                              'Snopes': SnopesScraper()}
+        with open('/home/wtfact/Documents/Keys and Settings/scrapers_passwords.json') as scrapers_passwords_file:
+            scrapers_passwords = json.load(scrapers_passwords_file)
+        self.scrapers_passwords = {'CNN': scrapers_passwords['CNN'],
+                                   'AfricaCheck': scrapers_passwords['AfricaCheck'],
+                                   'FactScan': scrapers_passwords['FactScan'],
+                                   'ClimateFeedback': scrapers_passwords['ClimateFeedback'],
+                                   'GossipCop': scrapers_passwords['GossipCop'],
+                                   'Politifact': scrapers_passwords['Politifact'],
+                                   'TruthOrFiction': scrapers_passwords['TruthOrFiction'],
+                                   'Polygraph': scrapers_passwords['Polygraph'],
+                                   'Snopes': scrapers_passwords['Snopes']}
+        with open('/home/wtfact/Documents/Keys and Settings/email_password.json') as email_password_file:
+            email_password = json.load(email_password_file)
+        self.email = email_password['Email']
+        self.email_pass = email_password['Password']
 
     def extract_claims_from_scrapers(self, num_of_pages):
         print('start')
@@ -37,7 +50,7 @@ class WebScrapingManage:
             self.client.get(self.API_BASE_ENDPOINT)
             cookies = dict(self.client.cookies)
             csrf_token = self.client.cookies['csrftoken']
-            headers = {'url': self.API_ADD_CLAIM_ENDPOINT, "X-CSRFToken": csrf_token}
+            headers = {'Referer': self.API_ADD_CLAIM_ENDPOINT, "X-CSRFToken": csrf_token}
             scrapers_ids = json.loads(self.client.get(self.API_SCRAPERS_IDS_ENDPOINT).content.decode('utf-8'))
             # for the first time to send scrapers' claims
             # all_scrapers_claims = []
@@ -46,9 +59,10 @@ class WebScrapingManage:
                     claims_info_arr = scraper_class.extract_claims_info(num_of_pages)
                     for claim_info in claims_info_arr:
                         claim_info['user_id'] = scrapers_ids[scraper_name]
+                        claim_info['username'] = scraper_name
                         claim_info['password'] = self.scrapers_passwords[scraper_name]
                         claim_info['add_comment'] = 'true'
-                        print('Sending a claim from %s' % scraper_name)
+                        # print('Sending a claim from %s' % scraper_name)
                         # for the first time to send scrapers' claims
                         # all_scrapers_claims.append(claim_info)
                         requests.post(url=self.API_ADD_CLAIM_ENDPOINT, data=claim_info, headers=headers,
