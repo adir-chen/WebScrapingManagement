@@ -58,6 +58,7 @@ class WebScrapingManage:
             for scraper_name, scraper_class in self.scrapers_dict.items():
                 try:
                     claims_info_arr = scraper_class.extract_claims_info(num_of_pages)
+                    print('Finished importing claims from %s' % scraper_name)
                     for claim_info in claims_info_arr:
                         claim_info['user_id'] = scrapers_ids[scraper_name]
                         claim_info['username'] = scraper_name
