@@ -20,7 +20,10 @@ class PolitifactScraper(AbstractScraper):
                 url = self.scraper_url.split('.com')[0] + '.com' + element.find('a', class_='link')['href']
 
                 # open article page
-                article_page = super().open_fact_check_page(url)
+                try:
+                    article_page = super().open_fact_check_page(url)
+                except:
+                    continue
 
                 # title
                 title = article_page.find('h1', class_='article__title').text
