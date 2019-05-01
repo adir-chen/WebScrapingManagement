@@ -47,12 +47,10 @@ class AfricaCheckScraper(AbstractScraper):
                 label = element.find('div', class_='verdict-stamp').text.strip()
 
                 # tags
-                tags = []
+                site_tags = []
                 for tag in element.find('ul', class_='tag-list').findAll('li')[1:]:
-                    tags.append(tag.find('a').text.strip())
-                # tags_claim = super().extract_tags(claim)
-                # tags = list(set(tags_list + tags_claim))
-                tags = ','.join(super().extract_tags(' '.join(tags)))
+                    site_tags.append(tag.find('a').text.strip())
+                tags = super().clean_site_tags(site_tags)
 
                 # img_src
                 img_src = element.find('img')['src']

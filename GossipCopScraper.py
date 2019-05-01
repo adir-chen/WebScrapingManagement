@@ -44,12 +44,10 @@ class GossipCopScraper(AbstractScraper):
                 label = article_page.select('div[class^=meter]')[0].find('span').text.split(':')[1].strip()
 
                 # tags
-                tags = []
-                tags_list = article_page.find('p', class_='tags').findAll('a')
-                for tag in tags_list:
-                    tags.append(tag.text.strip())
-                # tags = ','.join(tags)
-                tags = ','.join(super().extract_tags(' '.join(tags)))
+                site_tags = []
+                for tag in article_page.find('p', class_='tags').findAll('a'):
+                    site_tags.append(tag.text.strip())
+                tags = super().clean_site_tags(site_tags)
 
                 # img_src
                 img_src = element.find('img')['src']

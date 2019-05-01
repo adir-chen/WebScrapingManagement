@@ -48,14 +48,13 @@ class TruthOrFictionScraper(AbstractScraper):
                 claim = article_page.find('div', class_='claim-description').text.strip()
 
                 # tags
-                tags = []
+                site_tags = []
                 tags_content = article_page.find('ul', class_='tt-tags')
                 if tags_content:
                     tags_content = tags_content.find_all('li')
-                    for tag_content in tags_content:
-                        tags.append(tag_content.text.strip())
-                # tags = ','.join(tags)
-                tags = ','.join(super().extract_tags(' '.join(tags)))
+                    for tag in tags_content:
+                        site_tags.append(tag.text.strip())
+                tags = super().clean_site_tags(site_tags)
 
                 # img_src
                 try:

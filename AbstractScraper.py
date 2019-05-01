@@ -21,6 +21,19 @@ class AbstractScraper(ABC):
     def extract_claims_info(self, num_of_pages):
         pass
 
+    def clean_site_tags(self, site_tags):
+        new_tags = []
+        for tag in site_tags:
+            new_tag = ''
+            for char in tag:
+                if char.isalpha() or char.isdigit() or char.isspace():
+                    new_tag += char
+            if new_tag != '':
+                new_tags.append(new_tag)
+        return ','.join(new_tags)
+
+
+
     def extract_tags(self, claim):
         filtered_sentence = []
         tags = []

@@ -46,12 +46,11 @@ class PolygraphScraper(AbstractScraper):
                 label = article_page.find('div', class_='verdict-head').find('span', class_='').text.strip()
 
                 # tags
-                tags = []
+                site_tags = []
                 tags_content = article_page.find('meta', attrs={'name': 'news_keywords'})['content'].split(',')
-                for tag_content in tags_content:
-                    tags.append(tag_content.strip())
-                # tags = ','.join(tags)
-                tags = ','.join(super().extract_tags(' '.join(tags)))
+                for tag in tags_content:
+                    site_tags.append(tag.strip())
+                tags = super().clean_site_tags(site_tags)
 
                 # img_src
                 img_src = article_page.find('div', class_='img-wrap').find('img')['src']

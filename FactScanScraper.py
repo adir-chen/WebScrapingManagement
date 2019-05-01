@@ -42,13 +42,10 @@ class FactScanScraper(AbstractScraper):
                 label = article_page.find('div', class_='fact-check-icon').find('img')['alt'].split(':')[1].strip()
 
                 # tags
-                tags_list = []
+                site_tags = []
                 for tag in article_page.find('span', class_='post-category').findAll('a'):
-                    tags_list.append(tag.text.strip())
-                # tags_claim = super().extract_tags(claim)
-                # tags = list(set(tags_list + tags_claim))
-                # tags = ','.join(tags)
-                tags = ','.join(super().extract_tags(' '.join(tags_list)))
+                    site_tags.append(tag.text.strip())
+                tags = super().clean_site_tags(site_tags)
 
                 # img_src
                 img_src = article_page.find('div', class_='post-content').findAll('img')[1]['src']
