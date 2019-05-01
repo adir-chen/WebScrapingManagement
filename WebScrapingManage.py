@@ -9,6 +9,7 @@ from AfricaCheckScraper import AfricaCheckScraper
 from CnnAPI import CnnAPI
 import requests
 import smtplib
+import csv
 import json
 
 
@@ -44,6 +45,11 @@ class WebScrapingManage:
             email_password = json.load(email_password_file)
         self.email = email_password['Email']
         self.email_pass = email_password['Password']
+        keys = ['title', 'claim', 'description', 'url', 'verdict_date', 'tags',
+                'category', 'label', 'image_src', 'add_comment', 'user_id', 'username']
+        with open('claims.csv', 'a', newline='') as output_file:
+            dict_writer = csv.DictWriter(output_file, keys)
+            dict_writer.writeheader()
 
     def extract_claims_from_scrapers(self, num_of_pages):
         print('start')
@@ -60,10 +66,11 @@ class WebScrapingManage:
                     claims_info_arr = scraper_class.extract_claims_info(num_of_pages)
                     print('Finished importing claims from %s' % scraper_name)
                     for claim_info in claims_info_arr:
+                        claim_info['add_comment'] = 'true'
                         claim_info['user_id'] = scrapers_ids[scraper_name]
                         claim_info['username'] = scraper_name
+                        self.update_csv(claim_info)
                         claim_info['password'] = self.scrapers_passwords[scraper_name]
-                        claim_info['add_comment'] = 'true'
                         # print('Sending a claim from %s' % scraper_name)
                         # for the first time to send scrapers' claims
                         all_scrapers_claims.append(claim_info)
@@ -95,6 +102,13 @@ class WebScrapingManage:
         server.sendmail(self.email,
                         self.email,
                         message)
+
+    def update_csv(self, claim_info):
+        keys = ['title', 'claim', 'description', 'url', 'verdict_date', 'tags',
+                'category', 'label', 'image_src', 'add_comment', 'user_id', 'username']
+        with open('claims.csv', 'a', newline='') as output_file:
+            dict_writer = csv.DictWriter(output_file, keys)
+            dict_writer.writerow(claim_info)
 
     def validate_scrapers(self, num_of_pages):
         no_errors = True
