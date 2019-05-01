@@ -1,6 +1,7 @@
 from AbstractScraper import AbstractScraper
 from datetime import datetime
 import requests
+import json
 
 
 class CnnAPI(AbstractScraper):
@@ -8,7 +9,9 @@ class CnnAPI(AbstractScraper):
     def __init__(self, api_name='CNN', api_url='https://newsapi.org/v2/top-headlines?sources=cnn&'):
         self.api_name = api_name
         self.api_url = api_url
-        self.api_key = '3c6626f926cd4cf78ed5d7bfe141a1ec'
+        with open('/home/wtfact/Documents/Keys and Settings/cnn_api_key.json') as cnn_api_key_file:
+            cnn_api_key = json.load(cnn_api_key_file)
+        self.api_key = cnn_api_key['API_KEY']
         self.request = (self.api_url + 'apiKey=' + self.api_key)
         super().__init__()
 

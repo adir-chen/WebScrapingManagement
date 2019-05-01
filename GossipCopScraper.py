@@ -41,7 +41,10 @@ class GossipCopScraper(AbstractScraper):
                 claim = title.split('?')[0].strip()
 
                 # label
-                label = article_page.select('div[class^=meter]')[0].find('span').text.split(':')[1].strip()
+                try:
+                    label = article_page.select('div[class^=meter]')[0].find('span').text.split(':')[1].strip()
+                except:
+                    continue
 
                 # tags
                 site_tags = []
