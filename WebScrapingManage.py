@@ -19,7 +19,11 @@ class WebScrapingManage:
         self.API_ADD_CLAIM_ENDPOINT = self.API_BASE_ENDPOINT + 'add_claim'
         self.API_SCRAPERS_IDS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_all_scrapers_ids'
         self.API_RANDOM_CLAIMS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_random_claims_from_scrapers'
-        self.scrapers_dict = {
+        self.scrapers_dict = {'CNN': CnnAPI(),
+                              'AfricaCheck': AfricaCheckScraper(),
+                              'FactScan': FactScanScraper(),
+                              'ClimateFeedback': ClimateFeedbackScraper(),
+                              'GossipCop': GossipCopScraper(),
                               'Politifact': PolitifactScraper(),
                               'TruthOrFiction': TruthOrFictionScraper(),
                               'Polygraph': PolygraphScraper(),
