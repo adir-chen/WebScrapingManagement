@@ -20,27 +20,27 @@ class WebScrapingManage:
         self.API_ADD_CLAIM_ENDPOINT = self.API_BASE_ENDPOINT + 'add_claim'
         self.API_SCRAPERS_IDS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_all_scrapers_ids'
         self.API_RANDOM_CLAIMS_ENDPOINT = self.API_BASE_ENDPOINT + 'users/get_random_claims_from_scrapers'
-        self.scrapers_dict = {'CNN': CnnAPI(),
-                              'AfricaCheck': AfricaCheckScraper(),
+        self.scrapers_dict = {'AfricaCheck': AfricaCheckScraper(),
                               'FactScan': FactScanScraper(),
                               'ClimateFeedback': ClimateFeedbackScraper(),
                               'GossipCop': GossipCopScraper(),
                               'Politifact': PolitifactScraper(),
                               'TruthOrFiction': TruthOrFictionScraper(),
                               'Polygraph': PolygraphScraper(),
-                              'Snopes': SnopesScraper()}
+                              'Snopes': SnopesScraper(),
+                              'CNN': CnnAPI()}
         # C:/Users/adirc/Desktop/
         with open('/home/wtfact/Documents/Keys and Settings/scrapers_passwords.json') as scrapers_passwords_file:
             scrapers_passwords = json.load(scrapers_passwords_file)
-        self.scrapers_passwords = {'CNN': scrapers_passwords['CNN'],
-                                   'AfricaCheck': scrapers_passwords['AfricaCheck'],
+        self.scrapers_passwords = {'AfricaCheck': scrapers_passwords['AfricaCheck'],
                                    'FactScan': scrapers_passwords['FactScan'],
                                    'ClimateFeedback': scrapers_passwords['ClimateFeedback'],
                                    'GossipCop': scrapers_passwords['GossipCop'],
                                    'Politifact': scrapers_passwords['Politifact'],
                                    'TruthOrFiction': scrapers_passwords['TruthOrFiction'],
                                    'Polygraph': scrapers_passwords['Polygraph'],
-                                   'Snopes': scrapers_passwords['Snopes']}
+                                   'Snopes': scrapers_passwords['Snopes'],
+                                   'CNN': scrapers_passwords['CNN']}
         with open('/home/wtfact/Documents/Keys and Settings/email_password.json') as email_password_file:
             email_password = json.load(email_password_file)
         self.email = email_password['Email']
