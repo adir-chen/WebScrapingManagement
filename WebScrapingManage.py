@@ -41,6 +41,15 @@ class WebScrapingManage:
                                    'Polygraph': scrapers_passwords['Polygraph'],
                                    'Snopes': scrapers_passwords['Snopes'],
                                    'CNN': scrapers_passwords['CNN']}
+        self.scrapers_num_pages = {'AfricaCheck': 1,
+                                   'FactScan': 0,
+                                   'ClimateFeedback': 1,
+                                   'GossipCop': 3,
+                                   'Politifact': 2,
+                                   'TruthOrFiction': 1,
+                                   'Polygraph': 1,
+                                   'Snopes': 2,
+                                   'CNN': 1}
         with open('/home/wtfact/Documents/Keys and Settings/email_password.json') as email_password_file:
             email_password = json.load(email_password_file)
         self.email = email_password['Email']
@@ -63,7 +72,7 @@ class WebScrapingManage:
             all_scrapers_claims = []
             for scraper_name, scraper_class in self.scrapers_dict.items():
                 try:
-                    claims_info_arr = scraper_class.extract_claims_info(num_of_pages)
+                    claims_info_arr = scraper_class.extract_claims_info(self.scrapers_num_pages[scraper_name])
                     print('Finished importing claims from %s' % scraper_name)
                     for claim_info in claims_info_arr:
                         claim_info['add_comment'] = 'true'
