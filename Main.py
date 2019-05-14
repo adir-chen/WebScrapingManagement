@@ -9,7 +9,7 @@ def main():
     # w_s_m.validate_scrapers(num_of_pages=1)
     # w_s_m.extract_claims_from_scrapers(num_of_pages)
     scheduler = BlockingScheduler()
-    scheduler.add_job(w_s_m.extract_claims_from_scrapers, 'interval', minutes=10, args=[num_of_pages])
+    scheduler.add_job(w_s_m.extract_claims_from_scrapers, 'interval', minutes=60*12, args=[num_of_pages])
     scheduler.start()
 
 
