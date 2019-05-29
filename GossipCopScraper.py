@@ -51,6 +51,7 @@ class GossipCopScraper(AbstractScraper):
                 for tag in article_page.find('p', class_='tags').findAll('a'):
                     site_tags.append(tag.text.strip())
                 tags = super().clean_site_tags(site_tags)
+                tags = super().get_optional_tags(tags, ','.join(super().extract_tags(claim)))
 
                 # img_src
                 img_src = element.find('img')['src']

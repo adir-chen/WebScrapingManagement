@@ -14,7 +14,7 @@ class AbstractScraper(ABC):
         self.claims_history = []
 
     def open_fact_check_page(self, url):
-        request = Request(url, headers={'User-Agent': 'Chrome/70.0.3538.102'})
+        request = Request(url, headers={'User-Agent': 'Chclean_site_tagsrome/70.0.3538.102'})
         return BeautifulSoup(urlopen(request), "html.parser")
 
     @abstractmethod
@@ -32,7 +32,14 @@ class AbstractScraper(ABC):
                 new_tags.append(new_tag)
         return ','.join(new_tags)
 
-
+    def get_optional_tags(self, current_tags, claim_tags):
+        optional_tags = []
+        for tag in claim_tags:
+            if tag.lower() not in current_tags.lower():
+                optional_tags.append(tag)
+        if current_tags:
+            current_tags += ','
+        return current_tags + ','.join(optional_tags)
 
     def extract_tags(self, claim):
         filtered_sentence = []

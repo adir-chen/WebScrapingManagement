@@ -23,10 +23,10 @@ class SnopesScraper(AbstractScraper):
                 url = element.a['href']
 
                 # description
-                description = element.find_next('p').find('span', class_='date').next_sibling.strip()
+                description = element.find('p', class_='subtitle').text
 
                 # verdict date
-                verdict_datetime = datetime.strptime(element.find_next('p').find('span', class_='date').text.strip().split('-', 1)[0].strip(), '%d %B %Y')
+                verdict_datetime = datetime.strptime(element.find('span', class_='date').text, '%d %B %Y')
                 verdict_date = datetime.strftime(verdict_datetime, '%d/%m/%Y')
 
                 # open article page

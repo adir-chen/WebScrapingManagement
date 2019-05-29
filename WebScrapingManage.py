@@ -29,7 +29,7 @@ class WebScrapingManage:
                               'Polygraph': PolygraphScraper(),
                               'Snopes': SnopesScraper(),
                               'CNN': CnnAPI()}
-        # C:/Users/adirc/Desktop/
+        # /home/wtfact/Documents/Keys and Settings/scrapers_passwords.json
         with open('/home/wtfact/Documents/Keys and Settings/scrapers_passwords.json') as scrapers_passwords_file:
             scrapers_passwords = json.load(scrapers_passwords_file)
         self.scrapers_passwords = {'AfricaCheck': scrapers_passwords['AfricaCheck'],

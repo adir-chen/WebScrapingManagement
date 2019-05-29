@@ -51,6 +51,7 @@ class PolygraphScraper(AbstractScraper):
                 for tag in tags_content:
                     site_tags.append(tag.strip())
                 tags = super().clean_site_tags(site_tags)
+                tags = super().get_optional_tags(tags, ','.join(super().extract_tags(claim)))
 
                 # img_src
                 img_src = article_page.find('div', class_='img-wrap').find('img')['src']
