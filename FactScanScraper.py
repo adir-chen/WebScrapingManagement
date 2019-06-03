@@ -46,7 +46,7 @@ class FactScanScraper(AbstractScraper):
                 for tag in article_page.find('span', class_='post-category').findAll('a'):
                     site_tags.append(tag.text.strip())
                 tags = super().clean_site_tags(site_tags)
-                tags = super().get_optional_tags(tags, ','.join(super().extract_tags(claim)))
+                tags = super().get_optional_tags(tags, super().extract_tags(claim))
 
                 # img_src
                 img_src = article_page.find('div', class_='post-content').findAll('img')[1]['src']

@@ -55,7 +55,7 @@ class TruthOrFictionScraper(AbstractScraper):
                     for tag in tags_content:
                         site_tags.append(tag.text.strip())
                 tags = super().clean_site_tags(site_tags)
-                tags = super().get_optional_tags(tags, ','.join(super().extract_tags(claim)))
+                tags = super().get_optional_tags(tags, super().extract_tags(claim))
 
                 # img_src
                 try:

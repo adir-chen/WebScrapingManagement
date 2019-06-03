@@ -51,7 +51,7 @@ class AfricaCheckScraper(AbstractScraper):
                 for tag in element.find('ul', class_='tag-list').findAll('li')[1:]:
                     site_tags.append(tag.find('a').text.strip())
                 tags = super().clean_site_tags(site_tags)
-                tags = super().get_optional_tags(tags, ','.join(super().extract_tags(claim)))
+                tags = super().get_optional_tags(tags, super().extract_tags(claim))
 
                 # img_src
                 img_src = element.find('img')['src']
