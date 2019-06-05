@@ -76,6 +76,7 @@ class WebScrapingManage:
                     # claims_info_arr = scraper_class.extract_claims_info(self.scrapers_num_pages[scraper_name])
                     print('Finished importing claims from %s' % scraper_name)
                     for claim_info in claims_info_arr:
+                        claim_info['description'] = 'According to ' + scraper_name + ':\n' + claim_info['description']
                         claim_info['add_comment'] = 'true'
                         claim_info['user_id'] = scrapers_ids[scraper_name]
                         claim_info['username'] = scraper_name
