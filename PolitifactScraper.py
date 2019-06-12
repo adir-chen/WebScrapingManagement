@@ -29,7 +29,7 @@ class PolitifactScraper(AbstractScraper):
                 title = article_page.find('h1', class_='article__title').text
 
                 # description
-                description = article_page.find('div', class_='article__text').find('p').text.strip().split('.')[0] + '.'
+                description = article_page.find("meta", property="og:description")['content'].strip()
 
                 # verdict_date
                 verdict_date_full = element.find('span', class_='article__meta').text.strip().split(',')

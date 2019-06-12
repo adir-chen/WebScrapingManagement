@@ -25,7 +25,7 @@ class WebScrapingManage:
                               'ClimateFeedback': ClimateFeedbackScraper(),
                               'GossipCop': GossipCopScraper(),
                               'Politifact': PolitifactScraper(),
-                              'TruthOrFiction': TruthOrFictionScraper(),
+                              # 'TruthOrFiction': TruthOrFictionScraper(),
                               'Polygraph': PolygraphScraper(),
                               'Snopes': SnopesScraper(),
                               'CNN': CnnAPI()}
@@ -37,7 +37,7 @@ class WebScrapingManage:
                                    'ClimateFeedback': scrapers_passwords['ClimateFeedback'],
                                    'GossipCop': scrapers_passwords['GossipCop'],
                                    'Politifact': scrapers_passwords['Politifact'],
-                                   'TruthOrFiction': scrapers_passwords['TruthOrFiction'],
+                                   # 'TruthOrFiction': scrapers_passwords['TruthOrFiction'],
                                    'Polygraph': scrapers_passwords['Polygraph'],
                                    'Snopes': scrapers_passwords['Snopes'],
                                    'CNN': scrapers_passwords['CNN']}
